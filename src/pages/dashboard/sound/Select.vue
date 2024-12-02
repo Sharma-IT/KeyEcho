@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Info } from 'lucide-vue-next';
+import { h } from 'vue';
+
 import {
   Select,
   SelectContent,
@@ -36,8 +39,30 @@ const { run: selectSound } = useRequest(
     if (res.status === 'error') {
       toast({
         variant: 'destructive',
-        description:
-          'Your selected sound needs an update. Please re-download it.',
+        duration: 10000,
+        description: h('div', { class: 'flex items-center gap-2' }, [
+          h(
+            'span',
+            "Your selected sound needs an update. Please re-download it. If re-downloading the sound didn't resolve the problem, click on the info icon to the right for further instructions.",
+          ),
+          h(
+            'button',
+            {
+              class: 'p-1 rounded hover:bg-secondary',
+              onClick: () => {
+                toast({
+                  description: `To resolve this issue, you need to:
+1. Go to ~/Library/Application Support/xyz.waveapps.keyecho/sounds
+2. Create a folder named according to the sound name
+3. Copy sound.ogg and config.json into the newly created folder
+4. Go back to KeyEcho and it should work now.`,
+                  duration: 10000,
+                });
+              },
+            },
+            [h(Info, { class: 'w-4 h-4' })],
+          ),
+        ]),
       });
     } else {
       const soundItem = sounds.value?.find((s) => s.value === sound);
